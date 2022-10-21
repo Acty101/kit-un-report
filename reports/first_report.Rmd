@@ -1,0 +1,79 @@
+---
+title: "Writing reports with R markdown"
+author: "Jun Kit"
+date: "2022-10-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(scipen = 999) # to prevent scientific notation of digits, ie 4.12321{10}
+```
+
+```{r packages, include=FALSE}
+library(tidyverse)
+library(here)
+library(knitr)
+```
+
+This report was prepared for the UN. It analyzes the relationship between a country's GDP, life expectancy, and CO2 emissions. Our goal was to determine to what degree a country's economic strength or weakness may be related to its public health and impact on climate pollution. We hypothesize that both life expectancy and CO2 emissions will increase with a country's GDP.
+
+```{r data, include=FALSE}
+gapminder_1997 <- read_csv(here("data/gapminder_1997.csv"),show_col_types = FALSE)
+```
+
+```{r gdp_life_exp_1997, echo = FALSE}
+ggplot(gapminder_1997, aes(x = gdpPercap, y = lifeExp, color = continent, 
+                           size = pop/1000000))+
+  geom_point()+
+  labs(x = "GDP per Capita",
+       y = "Life Expectancy",
+       title = "Do people in wealthy countries live longer?",
+       size = "Population (in millions)",
+       color = "Continent")
+```
+```{r summary_data, include = FALSE}
+n_countries <- gapminder_1997 %>%
+  select(country)%>%
+  n_distinct()
+
+min_gdp <- gapminder_1997 %>%
+  summarize(round(min(gdpPercap)))
+
+max_gdp <- gapminder_1997 %>%
+  summarize(round(max(gdpPercap)))
+```
+
+The above plot shows the relationship between GDP per capita and life expectancy for a total of `r n_countries` countries. For this set of countries, economic wealth ranged from a minimum of $`r min_gdp` to a maximum of $`r max_gdp` per capita
+
+| Summary of Data |
+|--------|--------|
+| Number of countries | `r n_countries` |
+| Minimum GDP per cap | `r min_gdp` |
+| maximum GDP per cap | `r max_gdp` |
+
+
+```{r tables, echo = FALSE}
+gapminder_1997 %>%
+  filter(continent == "Oceania")%>%
+  select(-continent)%>%
+  kable(col.names = c("Country","Population","Life Expectancy","GDP per Capita"))
+```
+## Lists
+
+### Unordered
+- Favorite programming language: **Python**
+- Most useful function: *read_csv()*
+- Next steps: ***Learn C++***
+
+### Ordered
+1. Favorite programming language: **Python**
+    + C++ comes 2nd
+2. Most useful function: *read_csv()*
+3. Next steps: ***Learn C++***
+4. Useful Markdown Reference: [Markdown Cheat Sheet]( https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+
+
+
+
+
