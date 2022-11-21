@@ -1,4 +1,4 @@
-# kit-un-report
+# Kit UN Report
 Carpentries workshop to learn about R (including R Markdown) & Git
 
 
